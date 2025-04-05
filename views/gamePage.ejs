@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <style>
+        * {
+            user-select: none;
+        }
+
+        .chessBoard {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 400px;
+            height: 400px;
+        }
+
+        .piece.white {
+            color: white;
+            filter: drop-shadow(0 0 0.1px rgba(0, 0, 0, 1));
+        }
+
+        .piece.black {
+            color: black;
+        }
+
+        .flipped {
+            transform: rotate(180deg);
+        }
+
+        .square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .square.light {
+            background-color: #f0eaea;
+        }
+
+        .square.dark {
+            background-color: #669336;
+        }
+
+        .piece {
+            font-size: 42px;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .piece-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .piece.draggable {
+            cursor: grab;
+        }
+
+        .dragging {
+            opacity: 0.5;
+        }
+
+        /* Rotate pieces for black player */
+        .flipped .piece {
+            transform: rotate(180deg);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <div
+        class="disconnectToast fixed top-10 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded shadow-md opacity-0 transition-opacity duration-300 pointer-events-none z-50 flex items-center gap-2">
+    </div>
+
+    <div id="toast"
+        class="fixed top-10 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow-md opacity-0 transition-opacity duration-300 pointer-events-none z-50 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8.414 8.414a1 1 0 01-1.414 0L3.293 11.12a1 1 0 111.414-1.414L8 13l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd" />
+        </svg>
+        <span>Link copied to clipboard!</span>
+    </div>
+
+    <div class="w-full h-screen flex flex-col items-center justify-center bg-zinc-900">
+        <div id="waitingScreen" class="w-full h-screen flex flex-col items-center justify-center text-white space-y-4">
+            <p class="text-2xl font-semibold">Waiting for opponent to join...</p>
+        </div>
+
+        <div
+            class="fixed top-5 right-5 flex gap-3 items-center border bg-zinc-800 border-zinc-700 rounded-lg px-4 py-2 max-w-[90%]">
+            <p class="text-sm text-zinc-400">Share this link to invite someone:</p>
+            <span id="roomLink" class="text-blue-400 text-sm"></span>
+            <button onclick="copyLink()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                Copy
+            </button>
+        </div>
+
+        <div id="chessContainer" class="hidden w-full h-[90vh] flex items-center justify-center">
+            <div class="chessBoard w-96 h-96"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+        integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"
+        integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/javascripts/chessgame.js"></script>
+</body>
+
+</html>
