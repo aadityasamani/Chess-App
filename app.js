@@ -47,7 +47,7 @@ app.get("/:roomID", (req, res) => {
 });
 
 io.on("connection", function (uniquesocket) {
-    console.log("connected");
+    // console.log("connected");
 
     uniquesocket.on("join-room", (roomID) => {
         const room = rooms[roomID];
@@ -57,17 +57,17 @@ io.on("connection", function (uniquesocket) {
             room.white = uniquesocket.id;
             uniquesocket.emit("playerRole", "w");
             uniquesocket.emit("boardState", room.game.fen());
-            console.log(`Player ${uniquesocket.id} assigned as White`);
+            // console.log(`Player ${uniquesocket.id} assigned as White`);
         } else if (!room.black) {
             room.black = uniquesocket.id;
             uniquesocket.emit("playerRole", "b");
             uniquesocket.emit("boardState", room.game.fen());
-            console.log(`Player ${uniquesocket.id} assigned as Black`);
+            // console.log(`Player ${uniquesocket.id} assigned as Black`);
         } else {
             room.spectators.push(uniquesocket.id);
             uniquesocket.emit("playerRole", "spectator");
             uniquesocket.emit("boardState", room.game.fen());
-            console.log(`Player ${uniquesocket.id} joined as Spectator`);
+            // console.log(`Player ${uniquesocket.id} joined as Spectator`);
         }
 
         uniquesocket.join(roomID);
@@ -103,21 +103,21 @@ io.on("connection", function (uniquesocket) {
         if (room.white === uniquesocket.id) {
             role = "White";
             room.white = null;
-            console.log("White disconnected");
+            // console.log("White disconnected");
         } else if (room.black === uniquesocket.id) {
             role = "Black";
             room.black = null;
-            console.log("Black disconnected");
+            // console.log("Black disconnected");
         } else {
             room.spectators = room.spectators.filter(id => id !== uniquesocket.id);
-            console.log(`Spectator with the id ${uniquesocket.id} disconnected`);
+            // console.log(`Spectator with the id ${uniquesocket.id} disconnected`);
         }
 
         io.to(roomID).emit("player-disconnected",role);
 
         if (!room.white && !room.black) {
             delete rooms[roomID];
-            console.log(`Room ${roomID} deleted`);
+            // console.log(`Room ${roomID} deleted`);
         }
 
         room.game = new Chess();

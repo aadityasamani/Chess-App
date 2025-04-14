@@ -3,6 +3,7 @@ const chess = new Chess();
 const boardElement = document.querySelector(".chessBoard");
 let draggedPiece = null;
 let sourceSquare = null;
+let lastMove = null;
 let playerRole = null;
 let disconnectToast = document.querySelector(".disconnectToast");
 document.getElementById("roomLink").innerText = window.location.href;
@@ -81,6 +82,22 @@ const renderBoard = () => {
         });
     });
 
+    document.querySelectorAll(".square").forEach(square => {
+        square.style.backgroundColor = "";
+    });
+
+    if (lastMove) {
+        const sourceSelector = `[data-row="${lastMove.source.row}"][data-col="${lastMove.source.col}"]`;
+        const targetSelector = `[data-row="${lastMove.target.row}"][data-col="${lastMove.target.col}"]`;
+    
+        const sourceSquareElem = boardElement.querySelector(sourceSelector);
+        const targetSquareElem = boardElement.querySelector(targetSelector);
+    
+        if (sourceSquareElem) sourceSquareElem.style.backgroundColor = "#f3f326";
+        if (targetSquareElem) targetSquareElem.style.backgroundColor = "#f3f326";
+    }
+    
+
     if (playerRole === "b") {
         boardElement.classList.add("flipped");
     } else {
@@ -94,7 +111,7 @@ const handleMove = (source, target) => {
         to: `${String.fromCharCode(97 + target.col)}${8 - target.row}`,
         promotion: "q"
     };
-    
+
     const result = chess.move(move);
 
     if (result) {
@@ -102,6 +119,7 @@ const handleMove = (source, target) => {
         const sourceSelector = `[data-row="${source.row}"][data-col="${source.col}"]`;
         const targetSelector = `[data-row="${target.row}"][data-col="${target.col}"]`;
 
+        lastMove = { source, target }
         const sourceSquareElem = boardElement.querySelector(sourceSelector);
         const targetSquareElem = boardElement.querySelector(targetSelector);
 
@@ -115,6 +133,8 @@ const handleMove = (source, target) => {
             targetSquareElem.appendChild(pieceElem);
         }
 
+        sourceSquareElem.style.backgroundColor = "yellow";
+        targetSquareElem.style.backgroundColor = "yellow";
         // Send move to server
         socket.emit("move", move);
     }
@@ -144,6 +164,15 @@ socket.on("boardState", function (fen) {
 
 socket.on("move", function (move) {
     chess.move(move);
+    const source = {
+        row: 8 - parseInt(move.from[1]),
+        col: move.from.charCodeAt(0) - 97
+    };
+    const target = {
+        row: 8 - parseInt(move.to[1]),
+        col: move.to.charCodeAt(0) - 97
+    };
+    lastMove = { source, target };
     renderBoard();
 });
 
