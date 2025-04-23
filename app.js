@@ -53,25 +53,39 @@ io.on("connection", function (uniquesocket) {
         const room = rooms[roomID];
         if (!room) return;
 
-        if (!room.white) {
+        uniquesocket.join(roomID);
+        uniquesocket.roomID = roomID;
+
+        if (!room.white && !room.black) {
+            const random = Math.random();
+            console.log(`Random number: ${random}`);
+            if (random < 0.5) {
+                room.white = uniquesocket.id;
+                uniquesocket.emit("playerRole", "w");
+            }
+
+            else {
+                room.black = uniquesocket.id;
+                uniquesocket.emit("playerRole", "b");
+            }
+        }
+
+        else if (!room.white) {
             room.white = uniquesocket.id;
             uniquesocket.emit("playerRole", "w");
-            uniquesocket.emit("boardState", room.game.fen());
             // console.log(`Player ${uniquesocket.id} assigned as White`);
         } else if (!room.black) {
             room.black = uniquesocket.id;
             uniquesocket.emit("playerRole", "b");
-            uniquesocket.emit("boardState", room.game.fen());
             // console.log(`Player ${uniquesocket.id} assigned as Black`);
         } else {
             room.spectators.push(uniquesocket.id);
             uniquesocket.emit("playerRole", "spectator");
-            uniquesocket.emit("boardState", room.game.fen());
             // console.log(`Player ${uniquesocket.id} joined as Spectator`);
         }
 
-        uniquesocket.join(roomID);
-        uniquesocket.roomID = roomID;
+
+        uniquesocket.emit("boardState", room.game.fen());
 
         if (room.white && room.black) {
             io.to(roomID).emit("start-game");
@@ -81,18 +95,18 @@ io.on("connection", function (uniquesocket) {
     uniquesocket.on("move", (move) => {
         const roomID = uniquesocket.roomID;
         const room = rooms[roomID];
-    
+
         if (!room || !room.game) return;
-    
+
         const result = room.game.move(move);
-    
+
         if (result) {
             io.to(roomID).emit("move", result);
         } else {
             console.log(`Invalid move attempted: ${JSON.stringify(move)} by ${uniquesocket.id}`);
         }
     });
-    
+
     uniquesocket.on("disconnect", function () {
         const roomID = uniquesocket.roomID;
         if (!roomID || !rooms[roomID]) return;
@@ -113,7 +127,7 @@ io.on("connection", function (uniquesocket) {
             // console.log(`Spectator with the id ${uniquesocket.id} disconnected`);
         }
 
-        io.to(roomID).emit("player-disconnected",role);
+        io.to(roomID).emit("player-disconnected", role);
 
         if (!room.white && !room.black) {
             delete rooms[roomID];
