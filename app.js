@@ -58,7 +58,7 @@ io.on("connection", function (uniquesocket) {
 
         if (!room.white && !room.black) {
             const random = Math.random();
-            console.log(`Random number: ${random}`);
+            // console.log(`Random number: ${random}`);
             if (random < 0.5) {
                 room.white = uniquesocket.id;
                 uniquesocket.emit("playerRole", "w");
