@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="m-0 p-0 box-border">
+
+    <% if (info && info.length > 0) { %>
+        <div class="invalidRoomIdToast font-bold fixed opacity-0 top-12 left-1/2 -translate-x-1/2 bg-red-500 text-white max-md:px-3 max-sm:text-[15px] px-6 py-2 rounded shadow-md transition-opacity duration-500 pointer-events-none z-50 flex items-center ease-in-out"> <%= info %> </div>
+    <% } %>
+
+    <div class="main relative bg-zinc-900 h-screen w-screen">
+        <a href="/dashboard" class="absolute top-4 left-4 z-[200] text-white flex items-center gap-2 px-3 py-1 hover:bg-white/10 rounded transition ease-in-out duration-300">
+            <i class="fa-solid fa-arrow-left text-lg"></i>
+            <span class="text-base font-medium">Back</span>
+        </a>
+        <form action="/joinRoom" class="w-screen h-screen text-white flex flex-col gap-5 items-center justify-center font-bold" method="post">
+                <h1 class="text-7xl max-md:text-6xl max-sm:text-5xl max-sm:tracking-tighter">Join Room</h1>
+                <input class="px-4 max-md:px-3 max-sm:w-50 max-sm:border-2 max-md:p-3 py-2 w-65 outline-none rounded-lg bg-transparent border-3 border-zinc-800" type="text" name="roomID" id="" placeholder="Room ID goes here" required>
+                <input type="submit" value="Join" class ="bg-[#353535] max-sm:px-10 px-15 py-2 rounded-md max-sm:text-[18px] text-[21px] cursor-pointer hover:bg-[#262626] duration-300 ease-in-out">
+        </form>
+    </div>
+</body>
+<script>
+    let invalidRoomIdToast = document.querySelector(".invalidRoomIdToast");
+    if(invalidRoomIdToast){
+        invalidRoomIdToast.classList.remove("opacity-0");
+        setTimeout(() => {
+            invalidRoomIdToast.classList.add("opacity-0");
+        }, 5000);
+    }
+</script>
+</html>

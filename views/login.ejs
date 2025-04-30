@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="m-0 p-0 box-border">
+    <div class="main relative h-screen w-screen overflow-hidden relative">
+        <a href="/" class="absolute top-4 left-4 z-[200] text-white flex items-center gap-2 px-3 py-1 hover:bg-white/10 rounded transition ease-in-out duration-300">
+            <i class="fa-solid fa-arrow-left text-lg"></i>
+            <span class="text-base font-medium">Back</span>
+        </a>
+        <div class="heroImg absolute top-0 left-0 h-screen w-screen bg-cover bg-center bg-no-repeat z-[1]" style="background-image: url('/images/loginbg.jpg');"></div>
+        <form action="/login" method="post" class="h-[100vh] w-[100vw] relative z-[100] flex flex-col items-center justify-center gap-5 text-lg">
+            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="text" placeholder="Email" name="email" required>
+            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="password" placeholder="Password" name="password" required>
+            <% if (info && info.length > 0) { %>
+                <p class="errorBox text-red-500 font-semibold"><%= info %></p>
+            <% } %>  
+            <div class="flex flex-col items-center">
+                <a href="/signup" class="relative bottom-2 text-slate-300 font-bold hover:underline self-end ml-100 max-md:ml-55">Don't have an account? Create One. </a>
+                <input class="w-40 max-sm:w-30 px-3 py-2 bg-[#445d65] text-white font-semibold rounded-md cursor-pointer hover:bg-[#364b52] duration-300 ease-in-out" type="submit" value="Login">
+            </div>
+        </form>
+    </div>
+    <script>
+        let errorBox = document.querySelector(".errorBox");
+        if(errorBox){
+            setTimeout(() => {
+                errorBox.classList.add("hidden");
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
