@@ -6,9 +6,9 @@ let sourceSquare = null;
 let lastMove = null;
 let playerRole = null;
 let disconnectToast = document.querySelector(".disconnectToast");
-document.getElementById("roomLink").innerText = window.location.href;
 
 const roomID = window.location.pathname.slice(1);
+document.getElementById("roomLink").innerText = roomID;
 
 socket.emit("join-room", roomID);
 

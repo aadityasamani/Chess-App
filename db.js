@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const uri = "mongodb+srv://aaditya:wGG9ZnfKR9HsHTzL@chessup-cluster.ntvtfjk.mongodb.net/?retryWrites=true&w=majority&appName=chessup-cluster";
+const uri = process.env.MONGO_URI;
 
 async function connectDB() {
   try {

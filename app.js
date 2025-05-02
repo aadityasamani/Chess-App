@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const socket = require('socket.io');
@@ -16,12 +18,13 @@ const io = socket(server);
 const connectDB = require('./db');
 
 let rooms = {};
+const JWT_SECRET = process.env.JWT_SECRET;
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'a0s8d1u2h18h1h28g19h8g1h',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }));
@@ -43,7 +46,7 @@ app.get("/login", redirectIfLoggedIn, (req, res) => {
     // }
 
     // try {
-    //     const decoded = jwt.verify(token, "a0s8d1u2h18h1h28g19h8g1h");
+    //     const decoded = jwt.verify(token, JWT_SECRET);
     //     console.log("Valid token on login page, redirecting to dashboard");
     //     req.flash("info", "You're already logged in. Logout to access this feature");
     //     return res.redirect("/dashboard");
@@ -68,15 +71,15 @@ app.get("/dashboard", isLoggedIn, async (req, res) => {
             return res.redirect("/login");
         }
 
-        const decodedCookie = jwt.verify(token, "a0s8d1u2h18h1h28g19h8g1h");
+        const decodedCookie = jwt.verify(token, JWT_SECRET);
         const user = await userModel.findOne({ email: decodedCookie.email });
-
+        
         if (!user) {
             return res.redirect("/login");
         }
 
         const name = user.name;
-        res.render("dashboard", { info: req.flash('info'), success: req.flash("success"), name });
+        res.render("dashboard",{ info: req.flash('info'), success: req.flash("success"), name , profilepic: user.profilepic });
 
     } catch (err) {
         console.error("Error in dashboard route:", err.message);
@@ -103,7 +106,7 @@ app.post("/login", async (req, res) => {
     bcrypt.compare(password, user.password, (err, result) => {
         if (result) {
             req.flash('success', 'Logged In Successfully')
-            let token = jwt.sign({ userid: user._id, email }, "a0s8d1u2h18h1h28g19h8g1h", { expiresIn: '1h' });
+            let token = jwt.sign({ userid: user._id, email }, JWT_SECRET, { expiresIn: '1h' });
             res.cookie('token', token, { maxAge: 3600000 });
             res.redirect("/dashboard");
         }
@@ -116,6 +119,22 @@ app.post("/login", async (req, res) => {
 
 app.post("/signup", async (req, res) => {
     let { name, email, password } = req.body;
+
+    if (!name || name.length < 3) {
+        req.flash("info", "Name must be at least 3 characters.");
+        return res.redirect("/signup");
+    }
+
+    if (!email || !email.includes("@")) {
+        req.flash("info", "Enter a valid email address.");
+        return res.redirect("/signup");
+    }
+
+    if (!password || password.length < 6) {
+        req.flash("info", "Password must be at least 6 characters.");
+        return res.redirect("/signup");
+    }
+
     let user = await userModel.findOne({ email });
     if (user) {
         req.flash('info', 'User already registered');
@@ -129,7 +148,7 @@ app.post("/signup", async (req, res) => {
         password: hash
     });
 
-    let token = jwt.sign({ userid: user._id, email }, "a0s8d1u2h18h1h28g19h8g1h", { expiresIn: '1h' });
+    let token = jwt.sign({ userid: user._id, email }, JWT_SECRET, { expiresIn: '1h' });
     res.cookie('token', token, { maxAge: 3600000 });
     req.flash("success", "Account Created Succesfully")
     res.redirect("/dashboard");
@@ -273,7 +292,7 @@ async function startServer() {
     const db = await connectDB();
 
     const PORT = process.env.PORT || 3000;
-    server.listen(PORT, () => {
+    server.listen(process.env.PORT || 3000, () => {
         console.log(`🚀 Server running at http://localhost:${PORT}`);
     });
 }
@@ -290,7 +309,7 @@ function isLoggedIn(req, res, next) {
     }
 
     try {
-        const data = jwt.verify(token, "a0s8d1u2h18h1h28g19h8g1h");
+        const data = jwt.verify(token, JWT_SECRET);
         // console.log(`[${req.path}] isLoggedIn verified:`, data.email);
         req.user = data;
         return next();
@@ -312,7 +331,7 @@ function redirectIfLoggedIn(req, res, next) {
     }
 
     try {
-        const decoded = jwt.verify(token, "a0s8d1u2h18h1h28g19h8g1h");
+        const decoded = jwt.verify(token, JWT_SECRET);
         // console.log(`[${req.path}] Valid token for:`, decoded.email);
 
         // Skip redirects for specific routes

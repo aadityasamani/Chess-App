@@ -15,9 +15,9 @@
     <div class="main relative h-screen w-screen overflow-hidden">
         <div class="heroImg absolute top-0 left-0 h-screen w-screen bg-cover bg-center bg-no-repeat z-[1]" style="background-image: url('/images/loginbg.jpg');"></div>
         <form action="/signup" method="post" class="h-[100vh] w-[100vw] relative z-[100] flex flex-col items-center justify-center gap-5 text-lg">
-            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="text" placeholder="Name" name="name">
-            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="text" placeholder="Email" name="email">
-            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="password" placeholder="Create Password" name="password">
+            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="text" placeholder="Name" name="name" required>
+            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="text" placeholder="Email" name="email" required>
+            <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="password" placeholder="Create Password" name="password" required>
             <% if (info && info.length > 0) { %>
                 <p class="errorBox text-red-500 font-semibold"><%= info %></p>
             <% } %>
