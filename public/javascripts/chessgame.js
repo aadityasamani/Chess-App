@@ -192,9 +192,8 @@ socket.on("player-disconnected", (role) => {
 renderBoard();
 
 function copyLink() {
-    const link = window.location.href;
 
-    navigator.clipboard.writeText(link).then(() => {
+    navigator.clipboard.writeText(roomID).then(() => {
         const toast = document.getElementById("toast");
         toast.classList.remove("opacity-0");
 
@@ -202,6 +201,6 @@ function copyLink() {
             toast.classList.add("opacity-0");
         }, 2000);
     }).catch(() => {
-        alert("Failed to copy the link.");
+        alert("Failed to copy the roomID.");
     });
 }
