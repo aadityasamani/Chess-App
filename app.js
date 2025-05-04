@@ -5,6 +5,7 @@ const app = express();
 const socket = require('socket.io');
 const crypto = require("crypto");
 const http = require('http');
+const multer = require('multer');
 const { Chess } = require('chess.js');
 const path = require('path');
 const userModel = require('./models/user');
@@ -16,6 +17,7 @@ const cookieParser = require('cookie-parser');
 const server = http.createServer(app);
 const io = socket(server);
 const connectDB = require('./db');
+const uploadOnCloudinary = require("./utils/cloudinary");
 
 let rooms = {};
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -30,6 +32,20 @@ app.use(session({
 }));
 app.use(flash());
 app.use(cookieParser());
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "./public/images/profilePics")
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        const ext = path.extname(file.originalname);
+        const fileName = file.fieldname + '-' + uniqueSuffix + ext
+        cb(null, fileName)
+    }
+});
+
+const upload = multer({ storage: storage });
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
@@ -73,13 +89,13 @@ app.get("/dashboard", isLoggedIn, async (req, res) => {
 
         const decodedCookie = jwt.verify(token, JWT_SECRET);
         const user = await userModel.findOne({ email: decodedCookie.email });
-        
+
         if (!user) {
             return res.redirect("/login");
         }
 
         const name = user.name;
-        res.render("dashboard",{ info: req.flash('info'), success: req.flash("success"), name , profilepic: user.profilepic });
+        res.render("dashboard", { info: req.flash('info'), success: req.flash("success"), name, profilepic: user.profilepic });
 
     } catch (err) {
         console.error("Error in dashboard route:", err.message);
@@ -193,6 +209,40 @@ app.get("/:roomID", isLoggedIn, (req, res) => {
     } else {
         req.flash("info", "Room doesnt exist");
         res.redirect("/joinRoom");
+    }
+});
+
+app.post("/uploadProfile", upload.single('profilePic'), async (req, res) => {
+
+    if(!req.file) {
+        req.flash("info", "Please select a file.");
+        return res.redirect("/dashboard");
+    }
+
+    try {
+        const localFilePath = req.file.path;
+        const result = await uploadOnCloudinary(localFilePath);
+
+        if (!result) {
+            req.flash("info", "Upload failed. Try again.");
+            return res.redirect("/dashboard");
+        }
+
+        const token = req.cookies.token;
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const user = await userModel.findOneAndUpdate(
+            { email: decoded.email },
+            { profilepic: result.url },
+            { new: true }
+        );
+
+        req.flash("success", "Profile picture updated successfully!");
+        res.redirect("/dashboard");
+
+    } catch (err) {
+        console.error("Error uploading profile picture:", err);
+        req.flash("info", "Something went wrong. Please try again.");
+        res.redirect("/dashboard");
     }
 });
 

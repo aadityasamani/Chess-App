@@ -1,47 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .profilePic {
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .profilePic:hover {
+      box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+  </style>
 </head>
+
 <body class="m-0 p-0 box-border">
 
-    <% if (success && success.length > 0) { %>
-        <div class="toast logInToast max-sm:w-40 text-center font-bold fixed opacity-0 top-10 left-1/2 -translate-x-1/2 bg-green-500 text-white max-md:px-3 max-sm:text-[15px] px-4 py-2 rounded shadow-md transition-opacity duration-500 pointer-events-none z-50 flex items-center gap-2 ease-in-out"> <%= success %> </div>
-    <% } %>
+  <% if (success && success.length > 0) { %>
+  <div class="toast logInToast max-sm:w-40 text-center font-bold fixed opacity-0 top-10 left-1/2 -translate-x-1/2 bg-green-500 text-white max-md:px-3 max-sm:text-[15px] px-4 py-2 rounded shadow-md transition-opacity duration-500 pointer-events-none z-50 flex items-center gap-2 ease-in-out">
+    <%= success %>
+  </div>
+  <% } %>
 
-    <% if (info && info.length > 0) { %>
-        <div class="toast infoToast max-sm:w-40 text-center font-bold fixed opacity-0 top-10 left-1/2 -translate-x-1/2 bg-zinc-800 text-white max-md:px-3 max-sm:text-[15px] px-4 py-2 rounded shadow-md transition-opacity duration-500 pointer-events-none z-50 flex items-center gap-2 ease-in-out"> <%= info %> </div>
-    <% } %>
-    
-    
-    <div class="main relative bg-zinc-900 h-screen w-screen flex flex-col items-center justify-center gap-4 font-bold overflow-hidden">
-        <a class="absolute top-5 right-5 bg-red-600 px-5 py-2 rounded-md max-sm:text-[16px] max-sm-text[18px] text-[19px] cursor-pointer hover:bg-red-700 duration-300 ease-in-out text-white" href="/logout">Logout</a>
+  <% if (info && info.length > 0) { %>
+  <div class="toast infoToast max-sm:w-40 text-center font-bold fixed opacity-0 top-10 left-1/2 -translate-x-1/2 bg-red-600 text-white max-md:px-3 max-sm:text-[15px] px-4 py-2 rounded shadow-md transition-opacity duration-500 pointer-events-none z-50 flex items-center gap-2 ease-in-out">
+    <%= info %>
+  </div>
+  <% } %>
 
-        <div class="headings relative z-[100] text-white">
-            <h1 class="ml-5 max-sm:text-[34px] max-md:text-[40px] max-sm:tracking-tighter text-7xl tracking-tight">Welcome, <%= name %> 👋</h1>
-        </div>
-
-        <div class="paras relative z-[100] text-white">
-            <p class="max-sm:w-80 max-md:text-[19px] max-md:px-3 w-170 text-[21px] text-center">Create a new room or join an existing one.</p>
-        </div>
-
-        <div class="buttons relative z-[100] text-white flex gap-3 max-md:flex-col">
-            <a class="bg-[#353535] max-md:px-6 px-8 py-2 rounded-md max-sm:text-[19px] text-[21px] cursor-pointer hover:bg-[#262626] duration-300 ease-in-out" href="/createRoom">Create Room</a>
-            <a class="bg-[#353535] max-md:px-6 px-8 py-2 rounded-md max-sm:text-[19px] text-[21px] cursor-pointer hover:bg-[#262626] duration-300 ease-in-out" href="/joinRoom">Join Room</a>
-        </div>
+  <!-- Profile Dialog Box -->
+  <div class="profileDialogBox hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div class="bg-gray-900 text-white rounded-2xl shadow-lg w-full max-w-md p-6 relative">
+      <button id="closeModal" aria-label="Close modal" class="transition-all duration-300 absolute top-4 right-4 text-gray-400 hover:text-white text-2xl cursor-pointer">&times;</button>
+      <h2 class="text-2xl font-semibold mb-4 text-center">Upload Profile Picture</h2>
+      <small class="text-gray-500 text-xs relative bottom-2">
+        Please upload a clear photo with your face centered and no group photos.
+      </small>
+      <form id="uploadForm" action="/uploadProfile" method="POST" enctype="multipart/form-data" class="flex flex-col items-center">
+        <input type="file" name="profilePic" accept="image/*" required class="file:bg-gray-700 file:border-0 file:rounded file:px-4 file:py-2 file:text-white file:cursor-pointer bg-gray-800 text-white rounded w-full mb-4" />
+        <button type="submit" class="bg-green-500 hover:bg-green-600 transition px-6 py-2 rounded-lg font-medium cursor-pointer">Upload</button>
+      </form>
     </div>
-</body>
-<script>
-    let toast = document.querySelector(".toast");
-    if(toast){
-        toast.classList.remove("opacity-0");
-        setTimeout(() => {
-            toast.classList.add("opacity-0");
-        }, 3000);
+  </div>
+
+  <div class="main relative bg-zinc-900 h-screen w-screen flex flex-col items-center justify-center gap-4 font-bold overflow-hidden transition duration-300">
+
+    <!-- UI Content -->
+    <a class="absolute top-5 right-5 bg-red-600 px-5 py-2 rounded-md max-sm:text-[16px] text-[19px] cursor-pointer hover:bg-red-700 duration-300 ease-in-out text-white"
+      href="/logout">Logout</a>
+
+    <div class="profilePic top-4 left-5 h-10 w-10 rounded-md absolute">
+      <img src="<%= profilepic === 'default.jpg' ? '/images/profilePics/default.jpg' : profilepic %>" alt="PFP" class="h-10 w-10 rounded-md" />
+    </div>
+
+    <div class="headings relative z-[100] text-white">
+      <h1 class="ml-5 max-sm:text-[34px] max-md:text-[40px] text-7xl tracking-tight max-sm:tracking-tighter">
+        Welcome, <%= name %> 👋
+      </h1>
+    </div>
+
+    <div class="paras relative z-[100] text-white">
+      <p class="max-sm:w-80 max-md:text-[19px] max-md:px-3 w-170 text-[21px] text-center">
+        Create a new room or join an existing one.
+      </p>
+    </div>
+
+    <div class="buttons relative z-[100] text-white flex gap-3 max-md:flex-col">
+      <a class="bg-[#353535] max-md:px-6 px-8 py-2 rounded-md max-sm:text-[19px] text-[21px] cursor-pointer hover:bg-[#262626] duration-300 ease-in-out"
+        href="/createRoom">Create Room</a>
+      <a class="bg-[#353535] max-md:px-6 px-8 py-2 rounded-md max-sm:text-[19px] text-[21px] cursor-pointer hover:bg-[#262626] duration-300 ease-in-out"
+        href="/joinRoom">Join Room</a>
+    </div>
+  </div>
+
+  <script>
+    const profileDialogBox = document.querySelector(".profileDialogBox");
+    const openBtn = document.querySelector(".profilePic");
+    const closeBtn = document.getElementById("closeModal");
+    const toast = document.querySelector(".toast");
+    const dashboard = document.querySelector(".main");
+
+    if (toast) {
+      toast.classList.remove("opacity-0");
+      setTimeout(() => {
+        toast.classList.add("opacity-0");
+      }, 3000);
     }
-</script>
+
+    openBtn.addEventListener("click", () => {
+      profileDialogBox.classList.remove("hidden");
+      dashboard.classList.add("hidden");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      profileDialogBox.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+    });
+  </script>
+</body>
+
 </html>
