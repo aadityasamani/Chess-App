@@ -12,9 +12,12 @@
         <i class="fa-solid fa-arrow-left text-lg"></i>
         <span class="text-base font-medium">Back</span>
     </a>        
-    <div class="main relative h-screen w-screen overflow-hidden">
+    <div class="main relative h-screen w-screen overflow-hidden flex items-center justify-center">
         <div class="heroImg absolute top-0 left-0 h-screen w-screen bg-cover bg-center bg-no-repeat z-[1]" style="background-image: url('/images/loginbg.jpg');"></div>
-        <form action="/signup" method="post" class="h-[100vh] w-[100vw] relative z-[100] flex flex-col items-center justify-center gap-5 text-lg">
+        <form action="/signup" method="post" class="realtive h-[50vh] w-[100vw] relative z-[100] flex flex-col items-center justify-center gap-5 text-lg">
+            <div class="logo cursor-pointer">
+                <img src="/images/logo.png" alt="ChessUp Logo" class="h-15 max-sm:h-13">
+            </div>
             <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="text" placeholder="Name" name="name" required>
             <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="text" placeholder="Email" name="email" required>
             <input class="w-90 max-sm:w-70 px-3 py-2 outline-none rounded-lg bg-transparent border-2 border-zinc-800 text-white font-bold" type="password" placeholder="Create Password" name="password" required>
@@ -30,10 +33,14 @@
 </body>
 <script>
     let errorBox = document.querySelector(".errorBox");
+    let logo = document.querySelector(".logo");
     if(errorBox){
         setTimeout(() => {
             errorBox.classList.add("hidden");
         }, 5000);
     }
+    logo.addEventListener("click",()=>{
+        window.location.reload();
+    });
 </script>
 </html>

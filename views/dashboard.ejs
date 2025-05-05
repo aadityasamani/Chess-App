@@ -51,15 +51,23 @@
       </form>
     </div>
   </div>
-
+  
   <div class="main relative bg-zinc-900 h-screen w-screen flex flex-col items-center justify-center gap-4 font-bold overflow-hidden transition duration-300">
 
-    <!-- UI Content -->
-    <a class="absolute top-5 right-5 bg-red-600 px-5 py-2 rounded-md max-sm:text-[16px] text-[19px] cursor-pointer hover:bg-red-700 duration-300 ease-in-out text-white"
-      href="/logout">Logout</a>
-
-    <div class="profilePic top-4 left-5 h-10 w-10 rounded-md absolute">
-      <img src="<%= profilepic === 'default.jpg' ? '/images/profilePics/default.jpg' : profilepic %>" alt="PFP" class="h-10 w-10 rounded-md" />
+    <div class="navbar fixed top-3 w-full flex items-center justify-between px-3 z-[200] bg-transparent">
+      <!-- Profile Picture (Left) -->
+      <div class="profilePic h-10 w-10 rounded-md cursor-pointer">
+        <img src="<%= profilepic === 'default.jpg' ? '/images/profilePics/default.jpg' : profilepic %>" alt="PFP" class="h-10 w-10 rounded-md" />
+      </div>
+    
+      <!-- Logo (Center) -->
+      <div class="logo">
+        <img src="/images/logo.png" alt="ChessUp Logo" class="h-15 max-sm:h-13 cursor-pointer">
+      </div>
+    
+      <!-- Logout Button (Right) -->
+      <a class="bg-red-600 px-5 py-2 rounded-md max-sm:text-[16px] text-[19px] cursor-pointer hover:bg-red-700 duration-300 ease-in-out text-white"
+        href="/logout">Logout</a>
     </div>
 
     <div class="headings relative z-[100] text-white">
@@ -88,7 +96,7 @@
     const closeBtn = document.getElementById("closeModal");
     const toast = document.querySelector(".toast");
     const dashboard = document.querySelector(".main");
-
+    let logo = document.querySelector(".logo");
     if (toast) {
       toast.classList.remove("opacity-0");
       setTimeout(() => {
@@ -105,6 +113,10 @@
       profileDialogBox.classList.add("hidden");
       dashboard.classList.remove("hidden");
     });
+
+    logo.addEventListener("click",()=>{
+        window.location.reload();
+    })
   </script>
 </body>
 
