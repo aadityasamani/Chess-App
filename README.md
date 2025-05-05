@@ -29,7 +29,7 @@ A full-stack real-time multiplayer chess game built with **Node.js**, **Express*
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: HTML, CSS, JavaScript (Vanilla), EJS templating  
+- **Frontend**: HTML, Tailwind CSS, JavaScript (Vanilla), EJS templating  
 - **Backend**: Node.js, Express.js, Socket.IO  
 - **Game Logic**: Chess.js  
 - **Authentication**: JWT, bcrypt, cookies, multer (for file uploads)  
