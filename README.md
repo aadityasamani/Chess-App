@@ -1,6 +1,6 @@
 # ♟️ ChessUp – Multiplayer Chess App
 
-🚧 This project was built as part of my **Diploma in Computer Engineering – 2nd Semester**
+🚧 This project was built during my **2nd Semester of Diploma in Computer Engineering**
 
 A full-stack real-time multiplayer chess game built with **Node.js**, **Express**, **Socket.IO**, and **Chess.js**, using **EJS** for frontend rendering. Play against anyone in a private room — just share your unique room ID and you're good to go!
 
